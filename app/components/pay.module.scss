@@ -1,0 +1,61 @@
+.pay-mask {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: var(--full-height);
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .pay-wrapper {
+    width: 300px;
+    border-radius: 20px;
+    background-color: #FFF;
+    padding: 40px 20px 20px;
+    position: relative;
+    .pay-close-icon {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+    .pay-bottom {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      .pay-btn {
+        flex: 1;
+      }
+    }
+  }
+  .pay-list-wrapper {
+    .pay-goods-wrapper {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      .pay-good-icon {
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+      }
+      .pay-good-name {
+        flex: 1;
+        font-size: 18px;
+        line-height: 20px;
+        margin-left: 10px;
+      }
+      .pay-good-raido {
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+      }
+    }
+    .pay-good-desc{
+      font-size: 14px;
+      margin-top: 8px;
+      color: #999;
+      margin-left: 28px;
+    }
+  }
+}
