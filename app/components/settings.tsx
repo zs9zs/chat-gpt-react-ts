@@ -181,7 +181,7 @@ function PasswordInput(props: HTMLProps<HTMLInputElement>) {
 
 export function Settings() {
   const navigate = useNavigate();
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  // const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
   const resetConfig = config.reset;
@@ -191,17 +191,17 @@ export function Settings() {
   ]);
 
   const updateStore = useUpdateStore();
-  const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const currentVersion = updateStore.version;
-  const remoteId = updateStore.remoteVersion;
-  const hasNewVersion = currentVersion !== remoteId;
+  // const [checkingUpdate, setCheckingUpdate] = useState(false);
+  // const currentVersion = updateStore.version;
+  // const remoteId = updateStore.remoteVersion;
+  // const hasNewVersion = currentVersion !== remoteId;
 
-  function checkUpdate(force = false) {
-    setCheckingUpdate(true);
-    updateStore.getLatestVersion(force).then(() => {
-      setCheckingUpdate(false);
-    });
-  }
+  // function checkUpdate(force = false) {
+  //   setCheckingUpdate(true);
+  //   updateStore.getLatestVersion(force).then(() => {
+  //     setCheckingUpdate(false);
+  //   });
+  // }
 
   const usage = {
     used: updateStore.used,
@@ -231,6 +231,7 @@ export function Settings() {
 
   const [modalExit, setModalExit] = useState(false);
 
+  // 退出登录
   function exitLogin() {
     setModalExit(false);
     accessStore.updateToken("");
@@ -238,7 +239,7 @@ export function Settings() {
 
   useEffect(() => {
     // checks per minutes
-    checkUpdate();
+    // checkUpdate();
     showUsage && checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

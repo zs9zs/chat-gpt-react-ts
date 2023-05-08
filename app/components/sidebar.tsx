@@ -9,6 +9,8 @@ import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import Locale from "../locales";
+import UserIcon from "../icons/user.svg";
+import PayIcon from "../icons/pay.svg";
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -134,7 +136,7 @@ export function SideBar(props: { className?: string }) {
           {!accessStore.token && (
             <div className={styles["sidebar-action"]}>
               <IconButton
-                icon={<GithubIcon />}
+                icon={<UserIcon />}
                 shadow
                 onClick={() => setShowLoginModal(true)}
               />
@@ -143,7 +145,7 @@ export function SideBar(props: { className?: string }) {
           {accessStore.token && (
             <div className={styles["sidebar-action"]}>
               <IconButton
-                icon={<GithubIcon />}
+                icon={<PayIcon />}
                 shadow
                 onClick={() => setShowPayModal(true)}
               />
