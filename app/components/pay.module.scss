@@ -12,7 +12,9 @@
   .pay-wrapper {
     width: 300px;
     border-radius: 20px;
-    background-color: #FFF;
+    // background-color: #FFF;
+    // background-color: var(--black);
+    background-color: var(--white);
     padding: 40px 20px 20px;
     position: relative;
     .pay-close-icon {
@@ -24,8 +26,13 @@
       margin-top: 20px;
       display: flex;
       align-items: center;
-      .pay-btn {
+      .pay-btn-a {
         flex: 1;
+        .pay-btn {
+          background-color: var(--white);
+          color: var(--black);
+          width: 100%;
+        }
       }
     }
   }

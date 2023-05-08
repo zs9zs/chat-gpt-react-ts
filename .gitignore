@@ -42,3 +42,4 @@ public/prompts.json
 .idea
 
 package-lock.json
+yarn.lock

@@ -35,6 +35,7 @@ import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
+import { Modal as AntdModal, Button } from "antd";
 
 function UserPromptModal(props: { onClose?: () => void }) {
   const promptStore = usePromptStore();
@@ -227,6 +228,14 @@ export function Settings() {
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
   const showUsage = accessStore.isAuthorized();
+
+  const [modalExit, setModalExit] = useState(false);
+
+  function exitLogin() {
+    setModalExit(false);
+    accessStore.updateToken("");
+  }
+
   useEffect(() => {
     // checks per minutes
     checkUpdate();
@@ -301,7 +310,7 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
-          <SettingItem title={Locale.Settings.Avatar}>
+          {/* <SettingItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
               content={
@@ -324,9 +333,9 @@ export function Settings() {
                 <Avatar role="user" />
               </div>
             </Popover>
-          </SettingItem>
+          </SettingItem> */}
 
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
             subTitle={
               checkingUpdate
@@ -349,7 +358,7 @@ export function Settings() {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -468,7 +477,7 @@ export function Settings() {
             <></>
           )}
 
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.Token.Title}
             subTitle={Locale.Settings.Token.SubTitle}
           >
@@ -480,7 +489,7 @@ export function Settings() {
                 accessStore.updateToken(e.currentTarget.value);
               }}
             />
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem
             title={Locale.Settings.Usage.Title}
@@ -657,7 +666,26 @@ export function Settings() {
               }}
             ></InputRange>
           </SettingItem>
+          <SettingItem title={Locale.Settings.LogOutOfLogin.Title}>
+            <Button
+              type="text"
+              onClick={() => setModalExit(true)}
+              className={styles["login-test"]}
+            >
+              {Locale.Settings.LogOutOfLogin.exitConfirm}
+            </Button>
+          </SettingItem>
         </List>
+
+        <AntdModal
+          title={Locale.Settings.LogOutOfLogin.exitModalTitle}
+          centered
+          okText={Locale.Settings.LogOutOfLogin.exitModalConfirm}
+          cancelText={Locale.Settings.LogOutOfLogin.exitModalCancel}
+          open={modalExit}
+          onOk={exitLogin}
+          onCancel={() => setModalExit(false)}
+        ></AntdModal>
 
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />

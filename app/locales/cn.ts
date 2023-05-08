@@ -151,6 +151,13 @@ const cn = {
       Title: "话题新鲜度 (presence_penalty)",
       SubTitle: "值越大，越有可能扩展到新话题",
     },
+    LogOutOfLogin: {
+      Title: "退出登录",
+      exitConfirm: "确认退出",
+      exitModalTitle: "是否确认退出登录",
+      exitModalConfirm: "确定",
+      exitModalCancel: "取消",
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",

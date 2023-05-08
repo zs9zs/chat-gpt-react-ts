@@ -36,7 +36,7 @@ const makeRequestParam = (
   // @ts-expect-error
   // delete modelConfig.max_tokens;
 
-  delete modelConfig.presence_penalty
+  delete modelConfig.presence_penalty;
 
   // override model config
   if (options?.model) {
@@ -172,19 +172,23 @@ export async function requestChatStream(
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
 
   try {
+    const accessStore = useAccessStore.getState();
+    // if (accessStore.token && accessStore.token.length > 0) {
+    //   headers["token"] = accessStore.token;
+    // }
     const res = await axios({
-      method: 'post',
-      url: '/api/chat',
+      method: "post",
+      url: "/api/chat",
       data: {
-        user_id:1,
-        message: req
-    }
-    })
+        // user_id:1,
+        token: accessStore.token,
+        message: req,
+      },
+    });
 
-    console.log('+++', res)
+    console.log("+++", res);
 
     clearTimeout(reqTimeoutId);
-    
 
     // let responseText = "";
     // const finish = () => {
@@ -192,7 +196,7 @@ export async function requestChatStream(
     //   // controller.abort();
     // };
 
-    if (res.statusText === 'OK') {
+    if (res.statusText === "OK") {
       // options?.onController?.(controller);
       // while (true) {
       //   const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
@@ -202,7 +206,7 @@ export async function requestChatStream(
       // finish();
       options?.onMessage(res.data.data.choices[0].message.content, true);
     }
-    
+
     // const res = await fetch("/api/chat-stream", {
     //   method: "POST",
     //   headers: {

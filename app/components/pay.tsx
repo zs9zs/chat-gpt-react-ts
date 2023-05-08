@@ -11,19 +11,9 @@ import {
   WechatOutlined,
 } from "@ant-design/icons";
 
-async function userLogin(act: string, pwd: string) {
-  const data = {
-    account: act,
-    psd: pwd,
-  };
-  await axios({
-    method: "post",
-    url: "/api/signUp",
-    data,
-  }).then((res) => {
-    console.log("get res:", res);
-  });
-}
+import { BUY_URL } from "../constant";
+
+import { useAccessStore } from "../store";
 
 interface Prompt {
   id: number;
@@ -57,105 +47,87 @@ interface Goods {
 
 export function PayList(props: { onClose?: () => void }) {
   const [payList, setPayList] = useState<Prompt[]>([] as Prompt[]);
-  const [radioValue, setRadioValue] = useState(1);
-  const [money, setMoney] = useState();
+  const [radioValue, setRadioValue] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const accessStore = useAccessStore();
+
   useEffect(() => {
     async function getPayList() {
       const res = await axios({
         method: "get",
         url: "/api/goodsList",
       });
-      console.log("test", res.data.data[0]);
+      setIsLoading(false);
       if (res?.data?.data?.length) {
         setPayList(res.data.data);
+        const { goods } = res.data.data[0];
+        if (goods?.length) {
+          const { id } = goods[0];
+          setRadioValue(id);
+        }
       }
     }
     getPayList();
   }, []);
 
   const onChange = (e: RadioChangeEvent) => {
-    console.log("changed", e.target.value);
     setRadioValue(e.target.value);
   };
 
-  async function payConfirm() {
+  function payConfirm() {
     props.onClose?.();
-    // const data = {
-    //   id: 1,
-    //   user_id: 1,
-    // }
-    // await axios({
-    //   method: 'get',
-    //   url: '/api/buy',
-    //   data
-    // }).then(res => {
-    //   props.onClose?.()
-    //   console.log("get res:",res);
-    // })
   }
 
   return (
-    <div className={styles["pay-mask"]}>
-      <div className={styles["pay-wrapper"]}>
-        <div className={styles["pay-close-icon"]} onClick={props.onClose}>
-          <CloseIcon />
-        </div>
-        {payList?.map((item) => (
-          <div className={styles["pay-list-wrapper"]} key={item.id}>
-            {item?.goods?.map((good) => (
-              <>
-                <div className={styles["pay-goods-wrapper"]} key={good.id}>
-                  <div className={styles["pay-good-icon"]}>
-                    <TransactionOutlined />
+    <>
+      <div className={styles["pay-mask"]}>
+        <div className={styles["pay-wrapper"]}>
+          <div className={styles["pay-close-icon"]} onClick={props.onClose}>
+            <CloseIcon />
+          </div>
+          {payList?.map((item) => (
+            <div className={styles["pay-list-wrapper"]} key={item.id}>
+              {item?.goods?.map((good) => (
+                <>
+                  <div className={styles["pay-goods-wrapper"]} key={good.id}>
+                    <div className={styles["pay-good-icon"]}>
+                      <TransactionOutlined />
+                    </div>
+                    <div className={styles["pay-good-name"]}>
+                      {good.gd_name}
+                    </div>
+                    <div className={styles["pay-good-raido"]}>
+                      <Radio
+                        checked={radioValue == good.id}
+                        value={good.id}
+                        onChange={onChange}
+                      ></Radio>
+                    </div>
                   </div>
-                  <div className={styles["pay-good-name"]}>{good.gd_name}</div>
-                  <div className={styles["pay-good-raido"]}>
-                    <Radio
-                      checked={radioValue === 1}
-                      value={1}
-                      onChange={onChange}
-                    >
-                      A
-                    </Radio>
+                  <div className={styles["pay-good-desc"]}>
+                    {good.gd_description}
                   </div>
-                </div>
-                <div className={styles["pay-good-desc"]}>
-                  {good.gd_description}
-                </div>
-              </>
-            ))}
+                </>
+              ))}
+            </div>
+          ))}
+          <div className={styles["pay-bottom"]}>
+            <a
+              className={styles["pay-btn-a"]}
+              href={BUY_URL + `?id=${radioValue}&token=${accessStore.token}`}
+              target="_blank"
+            >
+              <Button
+                className={styles["pay-btn"]}
+                onClick={payConfirm}
+                loading={isLoading}
+              >
+                {isLoading ? "Loading" : "确定支付"}
+              </Button>
+            </a>
           </div>
-        ))}
-
-        {/* <div className={styles["pay-list-wrapper"]}>
-          <div className={styles["pay-goods-wrapper"]}>
-            <div className={styles["pay-good-icon"]}>
-              <WechatOutlined twoToneColor="green" />
-            </div>
-            <div className={styles["pay-good-name"]}>微信</div>
-            <div className={styles["pay-good-raido"]}>
-              <input type="radio"></input>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles["pay-list-wrapper"]}>
-          <div className={styles["pay-goods-wrapper"]}>
-            <div className={styles["pay-good-icon"]}>
-              <AlipayOutlined twoToneColor="#999999" />
-            </div>
-            <div className={styles["pay-good-name"]}>支付宝</div>
-            <div className={styles["pay-good-raido"]}>
-              <input type="radio"></input>
-            </div>
-          </div>
-        </div> */}
-        <div className={styles["pay-bottom"]}>
-          <Button className={styles["pay-btn"]} onClick={payConfirm}>
-            确定支付
-          </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
