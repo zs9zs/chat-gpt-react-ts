@@ -156,6 +156,13 @@ const jp = {
       Title: "トピックの新鮮度 (presence_penalty)",
       SubTitle: "値が大きいほど、新しいトピックへの展開が可能になります。",
     },
+    LogOutOfLogin: {
+      Title: "ログオンの終了",
+      exitConfirm: "終了の確認",
+      exitModalTitle: "ログオンを終了することを確認するかどうか",
+      exitModalConfirm: "を選択して、",
+      exitModalCancel: "キャンセル",
+    },
   },
   Store: {
     DefaultTopic: "新しいチャット",

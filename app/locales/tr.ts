@@ -157,6 +157,13 @@ const tr: LocaleType = {
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",
     },
+    LogOutOfLogin: {
+      Title: "Girişten çık",
+      exitConfirm: "Çıkışı doğrula",
+      exitModalTitle: "Çıkacağına emin misin?",
+      exitModalConfirm: "belirle",
+      exitModalCancel: "iptal et",
+    },
   },
   Store: {
     DefaultTopic: "Yeni Konuşma",

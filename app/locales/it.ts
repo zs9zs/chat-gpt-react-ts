@@ -156,6 +156,13 @@ const it: LocaleType = {
       SubTitle:
         "Un valore maggiore aumenta la probabilità di parlare di nuovi argomenti",
     },
+    LogOutOfLogin: {
+      Title: "Esci dal login",
+      exitConfirm: "Conferma uscita",
+      exitModalTitle: "Sei sicuro di disconnetterti",
+      exitModalConfirm: "determinare",
+      exitModalCancel: "annulla",
+    },
   },
   Store: {
     DefaultTopic: "Nuova conversazione",

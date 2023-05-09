@@ -151,6 +151,13 @@ const tw: LocaleType = {
       Title: "話題新穎度 (presence_penalty)",
       SubTitle: "值越大，越有可能擴展到新話題",
     },
+    LogOutOfLogin: {
+      Title: "登出",
+      exitConfirm: "確認退出",
+      exitModalTitle: "是否確認登出",
+      exitModalConfirm: "確定",
+      exitModalCancel: "取消",
+    },
   },
   Store: {
     DefaultTopic: "新的對話",
