@@ -165,101 +165,241 @@ export async function requestChatStream(
     filterBot: options?.filterBot,
     model: options?.model,
   });
+  const accessStore = useAccessStore.getState();
 
-  console.log("[Request] ", req);
+  // console.log("[Request] ", req);
 
-  const controller = new AbortController();
+  // const controller = new AbortController();
+  // const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
+
+  // try {
+  //   const accessStore = useAccessStore.getState();
+  //   // if (accessStore.token && accessStore.token.length > 0) {
+  //   //   headers["token"] = accessStore.token;
+  //   // }
+  //   const res = await axios({
+  //     method: "post",
+  //     url: "/api/chat",
+  //     data: {
+  //       // user_id:1,
+  //       token: accessStore.token,
+  //       message: req,
+  //     },
+  //   });
+
+  //   console.log("+++", res);
+
+  //   clearTimeout(reqTimeoutId);
+
+  //   let responseText = "";
+  //   const finish = () => {
+  //     options?.onMessage(responseText, true);
+  //     controller.abort();
+  //   };
+
+  //   if (res.statusText === "OK") {
+  //     // options?.onMessage(res.data, true);
+  //     //   const reader = res.body?.getReader();
+  //     const decoder = new TextDecoder();
+  //     options?.onController?.(controller);
+  //     while (true) {
+  //       const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
+  //       const content = res.data
+  //   //     const content = await reader?.read();
+  //       clearTimeout(resTimeoutId);
+  //       if (!content) {
+  //         break;
+  //       }
+  //       const text = decoder.decode(content, { stream: true });
+  //       responseText += text;
+  //       const done = content.done;
+  //       options?.onMessage(responseText, false);
+  //       if (done) {
+  //         break;
+  //       }
+  //     }
+
+  //     finish();
+  //   }
+
+  // const res = await fetch("/api/chat-stream", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     path: "v1/chat/completions",
+  //     ...getHeaders(),
+  //   },
+  //   body: JSON.stringify(req),
+  //   signal: controller.signal,
+  // });
+  // clearTimeout(reqTimeoutId);
+
+  // let responseText = "";
+
+  // const finish = () => {
+  //   options?.onMessage(responseText, true);
+  //   controller.abort();
+  // };
+
+  // if (res.ok) {
+  //   const reader = res.body?.getReader();
+  //   const decoder = new TextDecoder();
+
+  //   options?.onController?.(controller);
+
+  //   while (true) {
+  //     const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
+  //     const content = await reader?.read();
+  //     clearTimeout(resTimeoutId);
+
+  //     if (!content || !content.value) {
+  //       break;
+  //     }
+
+  //     const text = decoder.decode(content.value, { stream: true });
+  //     responseText += text;
+
+  //     const done = content.done;
+  //     options?.onMessage(responseText, false);
+
+  //     if (done) {
+  //       break;
+  //     }
+  //   }
+
+  //   finish();
+  // }  else if (res.status === 401) {
+  //   console.error("Unauthorized");
+  //   options?.onError(new Error("Unauthorized"), res.status);
+  // } else {
+  //   console.error("Stream Error", res.body);
+  //   options?.onError(new Error("Stream Error"), res.status);
+  // }
+  // } catch (err) {
+  //   console.error("NetWork Error", err);
+  //   options?.onError(err as Error);
+  // }
+
+  const postData = {
+    token: accessStore.token,
+    message: req,
+  };
+  // const postData = {"message":{"messages":[{"role":"user","content":"你好啊"}],"model":"gpt-3.5-turbo","temperature":1,"max_tokens":2000}}
+  let controller = new AbortController();
+  const url = "/api/chat";
+
+  // 流式 打印机测试一：axios
+  // axios({
+  //   method: 'post',
+  //   url,
+  //   data: postData,
+  //   responseType: 'stream',
+  //   onDownloadProgress: function (progressEvent) {
+  //     options?.onMessage(progressEvent.currentTarget.responseText, true);
+  //   },
+  //   signal: controller.signal
+  // }).then(() => {
+  //   console.log('then111111')
+  // }).catch(() => {
+  //   console.log('catch11111')
+  // })
+
+  // 流式 打印机测试二：fetch
+  // const loadData = async () => {
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: 'post',
+  //       headers: {
+  //         'Content-Type': 'application/json;charset=utf-8'
+  //       },
+  //       body: JSON.stringify(postData),
+  //       signal: controller.signal
+  //     })
+
+  //     const reader = (response as any).body.getReader()
+  //     let data = ''
+  //     while (true) {
+  //       const {done, value} = await reader.read()
+  //       if (done) {
+  //         break
+  //       }
+  //       data += new TextDecoder().decode(value)
+  //       console.log('这是什么数据~~~', data)
+  //       options?.onMessage(data, true);
+  //     }
+  //   } catch {
+  //     console.log('流式 打印机测试二：fetch--请求错误')
+  //   }
+  // }
+  // loadData()
+
+  // 流式 打印机测试二：原始fetch
+  // const req = makeRequestParam(messages, {
+  //   stream: true,
+  //   filterBot: options?.filterBot,
+  //   model: options?.model,
+  // });
+  // console.log("[Request] ", req);
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
-
   try {
-    const accessStore = useAccessStore.getState();
-    // if (accessStore.token && accessStore.token.length > 0) {
-    //   headers["token"] = accessStore.token;
-    // }
-    const res = await axios({
-      method: "post",
-      url: "/api/chat",
-      data: {
-        // user_id:1,
-        token: accessStore.token,
-        message: req,
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
       },
+      body: JSON.stringify(postData),
+      signal: controller.signal,
     });
-
-    console.log("+++", res);
-
     clearTimeout(reqTimeoutId);
 
-    // let responseText = "";
-    // const finish = () => {
-    //   options?.onMessage(responseText, true);
-    //   // controller.abort();
-    // };
+    let responseText = "";
 
-    if (res.statusText === "OK") {
-      // options?.onController?.(controller);
-      // while (true) {
-      //   const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
-      //   options?.onMessage(responseText, false);
-      // }
+    const finish = () => {
+      options?.onMessage(responseText, true);
+      controller.abort();
+    };
 
-      // finish();
-      options?.onMessage(res.data.data.choices[0].message.content, true);
+    console.log(res, "~~~~");
+
+    if (res.ok) {
+      const reader = res.body?.getReader();
+      console.log("~~~ceshi~~", reader);
+      const decoder = new TextDecoder();
+
+      options?.onController?.(controller);
+
+      while (true) {
+        const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
+        const content = await reader?.read();
+        console.log("这里的数据", content);
+        clearTimeout(resTimeoutId);
+
+        if (!content || !content.value) {
+          break;
+        }
+        console.log("走到这领导", content);
+
+        const text = decoder.decode(content.value, { stream: true });
+        console.log("文字数据", text);
+        responseText += text;
+
+        const done = content.done;
+        options?.onMessage(responseText, false);
+
+        if (done) {
+          break;
+        }
+      }
+
+      finish();
+    } else if (res.status === 401) {
+      console.error("Unauthorized");
+      options?.onError(new Error("Unauthorized"), res.status);
+    } else {
+      console.error("Stream Error", res.body);
+      options?.onError(new Error("Stream Error"), res.status);
     }
-
-    // const res = await fetch("/api/chat-stream", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     path: "v1/chat/completions",
-    //     ...getHeaders(),
-    //   },
-    //   body: JSON.stringify(req),
-    //   signal: controller.signal,
-    // });
-    // clearTimeout(reqTimeoutId);
-
-    // let responseText = "";
-
-    // const finish = () => {
-    //   options?.onMessage(responseText, true);
-    //   controller.abort();
-    // };
-
-    // if (res.ok) {
-    //   const reader = res.body?.getReader();
-    //   const decoder = new TextDecoder();
-
-    //   options?.onController?.(controller);
-
-    //   while (true) {
-    //     const resTimeoutId = setTimeout(() => finish(), TIME_OUT_MS);
-    //     const content = await reader?.read();
-    //     clearTimeout(resTimeoutId);
-
-    //     if (!content || !content.value) {
-    //       break;
-    //     }
-
-    //     const text = decoder.decode(content.value, { stream: true });
-    //     responseText += text;
-
-    //     const done = content.done;
-    //     options?.onMessage(responseText, false);
-
-    //     if (done) {
-    //       break;
-    //     }
-    //   }
-
-    //   finish();
-    // }  else if (res.status === 401) {
-    //   console.error("Unauthorized");
-    //   options?.onError(new Error("Unauthorized"), res.status);
-    // } else {
-    //   console.error("Stream Error", res.body);
-    //   options?.onError(new Error("Stream Error"), res.status);
-    // }
   } catch (err) {
     console.error("NetWork Error", err);
     options?.onError(err as Error);
